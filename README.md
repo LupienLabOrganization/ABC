@@ -119,7 +119,7 @@ ABC can be downloaded from this repo, using the `git clone` command.
 
 To test ABC, users should [download the test SAM file](https://www.pmgenomics.ca/lupienlab/tools/abc/ERR022033.sorted.sam.gz) (766MB compressed using `gzip`, MD5sum `bbbac4164553231c77622e5bd8b40fa0`). The file is a sorted SAM file of the aligned ChIP-Seq reads for the FOXA1 in MCF7 cells.
 
-1. Decompress ERR022033.sorted.sam.gz using `gunzip` or other related tools. 
+1. Decompress `ERR022033.sorted.sam.gz` using `gunzip`. 
 1. Download FOXA1 ChIP-Seq data, [GSM631471](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM631471).
 1. Convert `ERR022033.sra` to a `.fastq` file with the [sratoolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software) using `fastq-dump ERR022033.sra`.
 1. Align the resulting `ERR022033.fastq` file to the reference genome using Bowtie2 ([Langmead and Salzberg, 2012](https://dx.doi.org/10.1038/nmeth.1923)) and converted to a `.bam` file with `samtools` ([Li, _et al._, 2009](https://doi.org/10.1093/bioinformatics/btp352)).
@@ -128,26 +128,26 @@ To test ABC, users should [download the test SAM file](https://www.pmgenomics.ca
 bowtie2 –x /path to index/hg19 –U ERR022033.fastq | samtools view –bS - > ERR022033.bam
 ```
 
-1. Sort the `.bam` file with `samtools` and converted back to a .sam file.
+5. Sort the `.bam` file with `samtools` and converted back to a .sam file.
 
 ```shell
 samtools sort ERR022033.bam ERR022033.sorted
 samtools view -h -o ERR022033.sorted.sam ERR022033.sorted.bam
 ```
 
-1. Create a tab-delimited text file containing the SNV information. In this case study, we have created `ABC_SNPs.txt`, available in this repo, which contains the following line once decompressed using `gunzip`.
+6. Create a tab-delimited text file containing the SNV information. In this case study, we have created `ABC_SNPs.txt`, available in this repo, which contains the following line once decompressed using `gunzip`.
 
 ```shell
 rs4784227	chr16	52599188	+	C	C/T	0.5
 ```
 
-1. Run ABC using the following command in the terminal.
+7. Run ABC using the following command in the terminal.
 
 ```shell
 perl ABC.pl --snv-file ABC_SNPs.txt -–align-file ERR022033.sorted.sam --out ABC_SNPs
 ```
 
-1. Visualize the results (limited to one SNP at a time) with the following command.
+8. Visualize the results (limited to one SNP at a time) with the following command.
 
 ```shell
 perl ABC.pl --out ABC_SNPs --visualize-snv rs4784227
