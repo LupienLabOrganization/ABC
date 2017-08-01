@@ -16,6 +16,24 @@ ABC calls allele-specific binding by identifying a bias in the distribution of t
 
 Care should be taken in the selection of SNVs. Homozygous SNVs or SNVs within duplications will appear to have strong allele-specific effects.  It is recommended that you filter SNPs prior to running ABC (i.e., those mapping to a motif). In addition, ABC does not filter duplicated reads, therefore the user may wish to remove duplicated reads prior to running ABC.
 
+## Installation
+
+### Software environment
+
+Perl and R should be installed on the system; instructions regarding their installation can be found from http://www.perl.org/get.html and http://cran.r-project.org, respectively.
+
+Additionally the perl module `Statistics::R` should be installed using the following command:
+
+```shell
+cpan Statistics::R
+```
+
+Further information on how to install Perl modules can be found here: http://www.cpan.org/modules/INSTALL.html.
+
+### Download ABC
+
+ABC can be downloaded from this repo, using the `git clone` command.
+
 ## Usage
 
 ```shell
@@ -97,25 +115,7 @@ A table of the results can be found in the output file with the `.dist` extensio
 
 The alignments separated by the alleles of each SNV can be viewed in the output file with the `.align` extension.
 
-## Installation
-
-### Software environment
-
-Perl and R should be installed on the system; instructions regarding their installation can be found from http://www.perl.org/get.html and http://cran.r-project.org, respectively.
-
-Additionally the perl module `Statistics::R` should be installed using the following command:
-
-```shell
-cpan Statistics::R
-```
-
-Further information on how to install Perl modules can be found here: http://www.cpan.org/modules/INSTALL.html.
-
-### Download ABC
-
-ABC can be downloaded from this repo, using the `git clone` command.
-
-### Example data
+## Examples
 
 To test ABC, users should [download the test SAM file](https://www.pmgenomics.ca/lupienlab/tools/abc/ERR022033.sorted.sam.gz) (766MB compressed using `gzip`, MD5sum `bbbac4164553231c77622e5bd8b40fa0`). The file is a sorted SAM file of the aligned ChIP-Seq reads for the FOXA1 in MCF7 cells.
 
