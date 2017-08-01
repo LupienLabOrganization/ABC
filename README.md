@@ -59,88 +59,98 @@ This step requires that the ABC has finished running. Once ABC is finished a fig
 
 Usage:	perl ABC.pl --out <output filename prefix> --visualize-snv <SNV ID>
 
-OUTPUT
+#### Output
 
-A table of the results can be found in the output file with the .dist extension.
-		
-	SNV			SNV Identifier
-	CHR			Chromosome
-	BP			Position on chromosome
-	REF			Reference allele
-	OBS			Observed alleles
-	A1			Allele 1
-	N_A1			Number of reads containing A1
-	F_A1			Frequency of A1
-	N_A1_POS		Number of reads aligned to the +ve strand containing A1
-	N_A1_NEG		Number of reads aligned to the -ve strand containing A1
-	A2			Allele 2 
-	N_A2			Number of reads containing A2
-	F_A2			Frequency of A2
-	N_A2_POS		Number of reads aligned to the +ve strand containing A2
-	N_A2_NEG		Number of reads aligned to the -ve strand containing A2
-	N_TOTAL	Total number of reads overlapping a SNV, including: N_ERRORS, N_OMITTED, MISSING_N
-	N_ERRORS		Number of reads containing a nucleotide other than A1 or A2
-	N_OMITTED			Number of reads where the SNV falls within a clipped or deleted region
-	MISSING_N		Number of reads containing an ambigous nucleotide N
-	MAX		The maximum value of from the .bedgraph file (if specified) 	within the 2x read length window centered on the SNV
-	P_BINOM		The P-value used to call allele-specific binding
-	P_MANN_WHIT	The P-value used to call a bias in read position between alleles 
-	P_FISHER	The P-value used to call a bias in the strand distribution between alleles
-	P_CHISQ	 	(Same as P_FISHER greater number of reads required)
-	P_STRAND		A binomial p-value of the differences in strand abundance 
-	A1_Position		Position of A1 within reads
-	A1_Strand		Strand of reads containing A1
-	A2_Position		Position of A2 within reads 
-	A2_strand		Strand of reads containing A2
+A table of the results can be found in the output file with the `.dist` extension.
+
+| Column Name | Description |
+|-------------|-------------|
+|`SNV` | SNV Identifier |
+|`CHR` | Chromosome |
+|`BP` | Position on chromosome |
+|`REF` | Reference allele |
+|`OBS` | Observed alleles |
+|`A1` | Allele 1 |
+|`N_A1` | Number of reads containing `A1` |
+|`F_A1` | Frequency of `A1` |
+|`N_A1_POS` | Number of reads aligned to the +ve strand containing `A1` |
+|`N_A1_NEG` | Number of reads aligned to the -ve strand containing `A1` |
+|`A2` | Allele 2 |
+|`N_A2` | Number of reads containing `A2` |
+|`F_A2` | Frequency of `A2` |
+|`N_A2_POS` | Number of reads aligned to the +ve strand containing `A2` |
+|`N_A2_NEG` | Number of reads aligned to the -ve strand containing `A2` |
+|`N_TOTAL` | Total number of reads overlapping a SNV, including: `N_ERRORS`, `N_OMITTED`, `MISSING_N` |
+|`N_ERRORS` | Number of reads containing a nucleotide other than `A1` or `A2` |
+|`N_OMITTED` | Number of reads where the SNV falls within a clipped or deleted region |
+|`MISSING_N` | Number of reads containing an ambigous nucleotide `N` |
+|`MAX` | The maximum value of from the `.bedgraph` file (if specified) within the 2x read length window centered on the SNV |
+|`P_BINOM` | P-value used to call allele-specific binding |
+|`P_MANN_WHIT` | P-value used to call a bias in read position between alleles |
+|`P_FISHER` | P-value used to call a bias in the strand distribution between alleles |
+|`P_CHISQ` | Same as `P_FISHER`. Greater number of reads required |
+|`P_STRAND` | A binomial p-value of the differences in strand abundance |
+|`A1_Position` | Position of A1 within reads |
+|`A1_Strand` | Strand of reads containing A1 |
+|`A2_Position` | Position of A2 within reads |
+|`A2_strand` | Strand of reads containing A2 |
 
 The alignments separated by the alleles of each SNV can be viewed in the output file with the `.align` extension.
 
-## Examples
+## Installation
 
-Setting up the software environment
+### Software environment
 
-	Perl and R should be installed on the system; instructions regarding their installation can be found from http://www.perl.org/get.html and http://cran.r-project.org, respectively.
+Perl and R should be installed on the system; instructions regarding their installation can be found from http://www.perl.org/get.html and http://cran.r-project.org, respectively.
 
-	Additionally the perl module Statistics::R should be installed using the following command in the terminal:
-		cpan Statistics::R
-	Further information on how to install Perl modules can be found here: http://www.cpan.org/modules/INSTALL.html
+Additionally the perl module `Statistics::R` should be installed using the following command:
 
-## Download ABC and example data
+```shell
+cpan Statistics::R
+```
 
-The ABC tool and documentation are publicly available from https://github.com/LupienLabOrganization/ABC.
+Further information on how to install Perl modules can be found here: http://www.cpan.org/modules/INSTALL.html.
 
-To test ABC, users should download the test SAM file (ERR022033.sorted.sam) from http://www.pmgenomics.ca/lupienlab/tools.html (766MB compressed using gzip). The file is a sorted SAM file of the aligned ChIP-Seq reads for the FOXA1 in MCF7 cells.
+### Download ABC
 
-	Decompress ERR022033.sorted.sam.gz using gunzip or other related tools. 
+ABC can be downloaded from this repo, using the `git clone` command.
 
-	The FOXA1 test data can be generated following these steps. 
+### Example data
 
-	1.	The ChIP-Seq data can be downloads here: http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM631471.
+To test ABC, users should [download the test SAM file](https://www.pmgenomics.ca/lupienlab/tools/abc/ERR022033.sorted.sam.gz) (766MB compressed using `gzip`, MD5sum `bbbac4164553231c77622e5bd8b40fa0`). The file is a sorted SAM file of the aligned ChIP-Seq reads for the FOXA1 in MCF7 cells.
 
-	2.	The ERR022033.sra can be converted to a .fastq file with the sratoolkit (http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software) using fastq-dump. 
+1. Decompress ERR022033.sorted.sam.gz using `gunzip` or other related tools. 
+1. Download FOXA1 ChIP-Seq data, [GSM631471](http://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSM631471).
+1. Convert `ERR022033.sra` to a `.fastq` file with the [sratoolkit](http://www.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software) using `fastq-dump ERR022033.sra`.
+1. Align the resulting `ERR022033.fastq` file to the reference genome using Bowtie2 ([Langmead and Salzberg, 2012](https://dx.doi.org/10.1038/nmeth.1923)) and converted to a `.bam` file with `samtools` ([Li, _et al._, 2009](https://doi.org/10.1093/bioinformatics/btp352)).
 
-		fastq-dump ERR022033.sra
+```shell
+bowtie2 –x /path to index/hg19 –U ERR022033.fastq | samtools view –bS - > ERR022033.bam
+```
 
-	3.	The resulting ERR022033.fastq file can be aligned to the reference genome using Bowtie2 (Langmead and Salzberg, 2012) and converted to a .bam file with samtools (Li, et al., 2009).
-	
-		bowtie2 –x /path to index/hg19 –U ERR022033.fastq | samtools view –bS - > ERR022033.bam
+1. Sort the `.bam` file with `samtools` and converted back to a .sam file.
 
-	4.	The .bam file can be easily sorted with samtools and converted back to a .sam file.
+```shell
+samtools sort ERR022033.bam ERR022033.sorted
+samtools view -h -o ERR022033.sorted.sam ERR022033.sorted.bam
+```
 
-		samtools sort ERR022033.bam ERR022033.sorted
-		samtools view -h -o ERR022033.sorted.sam ERR022033.sorted.bam
+1. Create a tab-delimited text file containing the SNV information. In this case study, we have created `ABC_SNPs.txt`, available in this repo, which contains the following line once decompressed using `gunzip`.
 
-	Third, users should create a tab-delimited text file containing the SNV information. In this case study, we have created ABC_SNPs.txt, available at
-	http://www.pmgenomics.ca/lupienlab/tools.html, which contains the following line once decompressed using gunzip or other related tools.
+```shell
+rs4784227	chr16	52599188	+	C	C/T	0.5
+```
 
-		rs4784227	chr16	52599188	+	C	C/T	0.5
+1. Run ABC using the following command in the terminal.
 
-	Finally ABC can be run using the following command in the terminal.
+```shell
+perl ABC.pl --snv-file ABC_SNPs.txt -–align-file ERR022033.sorted.sam --out ABC_SNPs
+```
 
-		perl ABC.pl --snv-file ABC_SNPs.txt -–align-file ERR022033.sorted.sam --out ABC_SNPs 
+1. Visualize the results (limited to one SNP at a time) with the following command.
 
-	The results can be visualized (limited to one SNP at a time) with the following command.
+```shell
+perl ABC.pl --out ABC_SNPs --visualize-snv rs4784227
+```
 
-		perl ABC.pl --out ABC_SNPs --visualize-snv rs4784227
-
-	ABC will output a .pdf file (rs4784227.ABC.SNPs.align.pdf) of the read distributions for the specified SNV 
+ABC will output a `.pdf` file (`rs4784227.ABC.SNPs.align.pdf`) of the read distributions for the specified SNV
