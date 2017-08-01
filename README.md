@@ -1,66 +1,59 @@
-INSTRUCTIONS
+# ABC
+**A**llele-specific **B**inding from **C**hIP-Seq
 
-ABC -- (Allele-specific Binding from ChIP-Seq) 
+## Description
 
-Identifies potential allele-specific binding events at known heterozygous positions within the aligned reads of a ChIP-Seq experiment. ABC requires at a minimum two (2) files a sorted BAM/SAM file 
-of a ChIP-Seq experiment and a file containing the position, strand and allele information of heterozygous Single Nucleotide Variants (SNVs), either SNPs and/or Mutations. ABC calls allele-specific 
-binding by identifying a bias in the distribution of the SNV alleles while attempting to control for potential false positives. If you have genomic sequence data you can use the allele ratio in the
-DNA as the expected frequency to control for chromosome copy number.
+ABC identifies potential allele-specific binding events at known heterozygous positions within the aligned reads of a ChIP-Seq experiment. 
 
-CAUTION
+ABC requires at a minimum two (2) files:
 
-Care should be taken in the selection of SNVs. Homozygous SNVs or SNVs within duplications will appear to have strong allele-specific effects.  It is recommended that you filter SNPs prior to 
-running ABC (i.e., those mapping to a motif). In addition, ABC does not filter duplicated reads, therefore the user may wish to remove duplicated reads prior to running ABC.
+1. A sorted BAM/SAM file of a ChIP-Seq experiment
+2. A file containing the position, strand and allele information of heterozygous single nucleotide variants (SNVs) (SNPs and/or mutations)
 
-RUNNING ABC
+ABC calls allele-specific binding by identifying a bias in the distribution of the SNV alleles while attempting to control for potential false positives. If you have genomic sequence data you can use the allele ratio in the DNA as the expected frequency to control for chromosome copy number.
 
-Usage: perl ABC.pl --align-file <input.sam> --snv-file <snv filename> --out <output filename>
+## Special notes before using ABC
 
-	--align-file (Required)		Specify the ChIP-Seq BAM/SAM file. Note: the BAM/SAM file must be sorted. If a BAM file is supplied ABC will create a temporary SAM file.
+Care should be taken in the selection of SNVs. Homozygous SNVs or SNVs within duplications will appear to have strong allele-specific effects.  It is recommended that you filter SNPs prior to running ABC (i.e., those mapping to a motif). In addition, ABC does not filter duplicated reads, therefore the user may wish to remove duplicated reads prior to running ABC.
 
-	--bg (Optional)			Specify a .bedgraph file capturing the ChIP-Seq signal (shifted read pileups) of the BAM/SAM file.
-					This can be useful to prioritize SNPs with low coverage, since they may fall within centre of the +ve and -ve strand peaks. 
-					This phenomenon is caused by short reads and is not necessary for longer reads.
+## Usage
 
-	--snv-file (Required)		A tab-delimited text file containing the list of heterozygous SNPs. 
-					Important: the CHR column should match the build used for the alignments (ie. chr# for hg19 or just the # for b37).
+```shell
+perl ABC.pl --align-file <input.sam> --snv-file <snv filename> --out <output filename>
+```
 
-					The format of the SNV file is as follows (Do not include the header):
+### Parameters
 
-					SNV_ID	CHR	POSITION	STRAND REF_ALLELE	OBSERVED_ALLELES ALLELE_RATIO_DNA
-           
-					rs111	chr1	1111	+	A	A/C	0.5
-					SNV1	chr10	10234	-	C	C/G	0.4
+| Parameter | Description |
+|-----------|-------------|
+| `--align-file` | Specify the ChIP-Seq BAM/SAM file. Note: the BAM/SAM file must be sorted. If a BAM file is supplied ABC will create a temporary SAM file. |
+| `--snv-file` | A tab-delimited text file containing the list of heterozygous SNPs. **Important**: the CHR column should match the build used for the alignments (ie. chr# for hg19 or just the # for b37). It is the responsibility of the user to verify the quality of the SNVs (i.e., do they pass Hardy-Weinberg equilibrium, etc...). |
 
-					It is the responsibility of the user to verify the quality of the SNVs (i.e., do they pass Hardy-Weinberg equilibrium, etc...).
+The format of the SNV file is as follows (Do not include the header):
 
-	--out (Optional)		Specify the output file prefix (default ABC).
-					(i.e., ABC will create two output files ABC.dist and ABC.align)
+```
+SNV_ID	CHR	POSITION	STRAND REF_ALLELE	OBSERVED_ALLELES ALLELE_RATIO_DNA
+rs111	chr1	1111	+	A	A/C	0.5
+SNV1	chr10	10234	-	C	C/G	0.4
+```
 
-	--min-reads (Optional) 		The minimum number of reads covering the a SNVs (default: 25).
-					(ie. ABC will report only those SNPs/Mutations with # reads overlapping them.)
-
-	--d (Optional)			Divide chromosomes into segments until reaching d lines for faster retrieval (default: 2000). 
-					A large BAM/SAM file can take a long time to process. You may try to increase the value of d. 
-					However, very large numbers will not necessarily increase speed. Consider splitting the alignment file by chromosome.
-
-	--mw-thres (Optional)		P-value threshold for the Mann-Whitney U test used to test a bias in the read position between the SNV alleles. (default: 0.05)
-					To report all SNVs set this parameter to 0.
-
-	--f-thres (Optional)		P-value threshold for the Fisher's exact test used to test for a bias between the strand distribution of the SNV alleles. (default: 0.05)
-           	     			To report all SNVs set this parameter to 0.
-
-	--min-mapq (Optional).
-				 	Set the minimum allowed MAPQ score for each read (default: 0).
-		
-	--verbose (Optional)		Print progress and SNV results summary to screen.	
-
-	--help				Prints command line options
+### Options
+| Option | Description |
+|--------|-------------|
+| `--bg` | Specify a `.bedgraph` file capturing the ChIP-Seq signal (shifted read pileups) of the BAM/SAM file. This can be useful to prioritize SNPs with low coverage, since they may fall within centre of the +ve and -ve strand peaks. This phenomenon is caused by short reads and is not necessary for longer reads. |
+| `--out` | Specify the output file prefix (default `ABC`; i.e., ABC will create two output files ABC.dist and ABC.align) |
+| `--min-reads` | The minimum number of reads covering the a SNVs (default: 25; ie. ABC will report only those SNPs/mutations with # reads overlapping them). |
+| `--d` | Divide chromosomes into segments until reaching d lines for faster retrieval (default: 2000). A large BAM/SAM file can take a long time to process. You may try to increase the value of `d`.	However, very large numbers will not necessarily increase speed. Consider splitting the alignment file by chromosome. |
+| `--mw-thres` | P-value threshold for the Mann-Whitney U test used to test a bias in the read position between the SNV alleles. (default: 0.05). To report all SNVs set this parameter to 0. |
+| `--f-thres` | P-value threshold for the Fisher's exact test used to test for a bias between the strand distribution of the SNV alleles. (default: 0.05). To report all SNVs set this parameter to 0. |
+| `--min-mapq` | Set the minimum allowed MAPQ score for each read (default: 0). |
+| `--verbose` | Print progress and SNV results summary to screen. |
+| `--help` | Prints command line options. |
 
 
-VISUALIZING SNV RESULTS
+## Visualizing SNV Results
 
-Create a figure of the distribution of reads containing a SNV of interest
+### Create a figure of the distribution of reads containing a SNV of interest
 
 This step requires that the ABC has finished running. Once ABC is finished a figure can be generated by specifying the output file prefix used in the initial run and the SNV ID as follows:
 
@@ -100,9 +93,9 @@ A table of the results can be found in the output file with the .dist extension.
 	A2_Position		Position of A2 within reads 
 	A2_strand		Strand of reads containing A2
 
-The alignments separated by the alleles of each SNV can be viewed in the output file with the .align extension.
+The alignments separated by the alleles of each SNV can be viewed in the output file with the `.align` extension.
 
-TUTORIAL (CASE EXAMPLES)
+## Examples
 
 Setting up the software environment
 
@@ -112,12 +105,11 @@ Setting up the software environment
 		cpan Statistics::R
 	Further information on how to install Perl modules can be found here: http://www.cpan.org/modules/INSTALL.html
 
-Download ABC and example data
+## Download ABC and example data
 
-	First, our ABC tool and documentation are publicly available from https://github.com/mlupien/ABC.
+The ABC tool and documentation are publicly available from https://github.com/LupienLabOrganization/ABC.
 
-	Second, to test ABC users should download the test SAM file (ERR022033.sorted.sam) from http://www.pmgenomics.ca/lupienlab/tools.html (766MB compressed using gzip). The file is a 
-	sorted SAM file of the aligned ChIP-Seq reads for the FOXA1 in MCF7 cells.
+To test ABC, users should download the test SAM file (ERR022033.sorted.sam) from http://www.pmgenomics.ca/lupienlab/tools.html (766MB compressed using gzip). The file is a sorted SAM file of the aligned ChIP-Seq reads for the FOXA1 in MCF7 cells.
 
 	Decompress ERR022033.sorted.sam.gz using gunzip or other related tools. 
 
